@@ -1,4 +1,4 @@
-package br.com.apilaira.livroslairaentity;
+package br.com.apilaira.livroslaira.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
