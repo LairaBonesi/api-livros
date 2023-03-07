@@ -9,4 +9,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate: 
       ddl-auto: update
-
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Livros</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/mdb.min.js"></script>
+
+    <style>
+        *{
+            margin: 0;
+            margin-left: 2px;
+            margin-top: 2px;
+            padding: 0;
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        input{
+            border-radius: 5px;
+            padding: 0.2em;
+            border: 1px solid #45548554;
+            box-shadow: 1px 1px 1px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            cadastrar = function () {
+                var settings = {
+                    "url": "http://localhost:8080/cadastroLivro",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({
+                        "titulo": $("#titulo").val(),
+                        "autor": $("#autor").val(),
+                        "paginas": $("#paginas").val(),
+                        "genero": $("#genero").val()
+                    }),
+                };
+
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                });
+            }
+
+            $("#cadastrar").on("click", function(){
+                var valido = verificarTexto();
+                if( valido ){
+                    cadastrar();
+                }
+                
+            });
+
+            verificarTexto = function(){
+                var retorno = true;
+                var inputs = $('.cadastro-livro input')
+                inputs.each(function(){
+                    if($(this).val() == ""){
+                        alert("É necessário preencher todos os campos.")
+                        retorno =  false;
+                    }
+                })
+                return retorno;
+            }
+
+
+        });
+
+    </script>
+</head>
+
+<body>
+    <h1>Cadastro</h1>
+    <p>Preencha todos os campos para cadastrar um novo livro:</p><br>
+    <div class="cadastro-livro">
+        <label>Título:</label><br>
+       <input type="text" id="titulo"/>
+    </div><br>
+    <div class="cadastro-livro">
+        <label>Autor:</label><br>
+        <input type="text" id="autor"/>
+    </div><br>
+    <div class="cadastro-livro">
+        <label>Núm. de páginas:</label><br>
+        <input type="number" id="paginas"/>
+    </div><br>
+    <div class="cadastro-livro">
+        <label>Gênero:</label><br>
+        <input type="text" id="genero"/>
+    </div><br>
+
+    <input type="button" value="Cadastrar" id="cadastrar">
+
+
+</body>
+
+</html>
