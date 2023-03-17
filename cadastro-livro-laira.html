@@ -59,15 +59,20 @@
             });
 
             verificarTexto = function(){
-                var retorno = true;
+                var temErro = false;
                 var inputs = $('.cadastro-livro input')
                 inputs.each(function(){
                     if($(this).val() == ""){
-                        alert("É necessário preencher todos os campos.")
-                        retorno =  false;
+                        temErro = true;
                     }
                 })
-                return retorno;
+
+                if(temErro){
+                    alert("É necessário preencher todos os campos.");
+                }
+               
+
+                
             }
 
 
