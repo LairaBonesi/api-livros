@@ -11,6 +11,14 @@ import lombok.Setter;
 @Entity
 public class StatusLivroEntity {
 
+	public StatusLivroEntity(Integer id, String status) {
+		this.id = id;
+		this.status = status;
+	}
+
+	public StatusLivroEntity() {
+	}
+
 	@Id
 	private Integer id;
 	

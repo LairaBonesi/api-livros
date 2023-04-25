@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.apilaira.livroslaira.entity.LivroEntity;
+import br.com.apilaira.livroslaira.entity.StatusLivroEntity;
+import br.com.apilaira.livroslaira.entity.StatusLivroEnum;
 import br.com.apilaira.livroslaira.response.LivroResponse;
 import br.com.apilaira.livroslaira.service.LivroService;
 
@@ -43,7 +45,13 @@ public class LivroController {
 			response.setGenero(livro.getGenero());
 			response.setPaginas(livro.getPaginas());
 			response.setTitulo(livro.getTitulo());
-			//response.setStatus(livro.getStatus());
+			
+			List<StatusLivroEnum> listaStatus = new ArrayList<StatusLivroEnum>(); 
+			for(StatusLivroEntity statusEntity : livro.getStatus()) {
+				listaStatus.add(StatusLivroEnum.valueOf(statusEntity.getStatus()));
+			}
+			
+			response.setStatus(listaStatus);
 			
 			responseList.add(response);
 		}
@@ -61,11 +69,44 @@ public class LivroController {
 			livroResponse.setId(entity.getId());
 			livroResponse.setPaginas(entity.getPaginas());
 			livroResponse.setTitulo(entity.getTitulo());
-			//livroResponse.setStatus(entity.getStatus());
+
+			List<StatusLivroEnum> listaStatus = new ArrayList<StatusLivroEnum>(); 
+			for(StatusLivroEntity statusEntity : entity.getStatus()) {
+				listaStatus.add(StatusLivroEnum.valueOf(statusEntity.getStatus()));
+			}
+			
+			livroResponse.setStatus(listaStatus);
+			
 		});
 		return livroResponse;
 			
 	}
+	
+	@GetMapping("/status/{status}")
+	public List<LivroResponse> findByStatus(@PathVariable("status") String status) {
+		List<LivroEntity> livrosBanco = livroService.findByStatus(status);
+		
+		List<LivroResponse> responseList = new ArrayList<LivroResponse>();
+		
+		for(LivroEntity livro : livrosBanco) {
+			LivroResponse response = new LivroResponse();
+			response.setAutor(livro.getAutor());
+			response.setGenero(livro.getGenero());
+			response.setId(livro.getId());
+			response.setPaginas(livro.getPaginas());
+			response.setTitulo(livro.getTitulo());
+			
+			List<StatusLivroEnum> listaStatus = new ArrayList<StatusLivroEnum>(); 
+			for(StatusLivroEntity statusEntity : livro.getStatus()) {
+				listaStatus.add(StatusLivroEnum.valueOf(statusEntity.getStatus()));
+			}
+			
+			response.setStatus(listaStatus);
+			responseList.add(response);
+		}
+		return responseList;
+	}
+	
 	
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
@@ -75,7 +116,15 @@ public class LivroController {
 		livro.setGenero(request.getGenero());
 		livro.setPaginas(request.getPaginas());
 		livro.setTitulo(request.getTitulo());
-		//livro.setStatus(request.getStatus());
+		
+		List<StatusLivroEntity> listStatusEntity = new ArrayList<StatusLivroEntity>();
+		for(StatusLivroEnum statusEnum : request.getStatus()) {
+			StatusLivroEntity statusEntity = new StatusLivroEntity();
+			statusEntity.setStatus(statusEnum.name());
+			listStatusEntity.add(statusEntity);
+		}
+		
+		livro.setStatus(listStatusEntity);
 		
 		livroService.create(livro);	
 		

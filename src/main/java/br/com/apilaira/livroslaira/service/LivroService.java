@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.apilaira.livroslaira.controller.LivroRequest;
 import br.com.apilaira.livroslaira.entity.LivroEntity;
 import br.com.apilaira.livroslaira.repository.LivroRepository;
 
@@ -22,6 +21,9 @@ public class LivroService {
 
 	public Optional<LivroEntity> findById(Integer id){
 		return livroRepository.findById(id);
+	}
+	public List<LivroEntity> findByStatus(String status){
+		return livroRepository.findByStatusStatus(status);
 	}
 	
 	public void create(LivroEntity livro) {
