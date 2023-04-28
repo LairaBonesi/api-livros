@@ -7,13 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.apilaira.livroslaira.entity.LivroEntity;
+import br.com.apilaira.livroslaira.entity.StatusLivroEntity;
 import br.com.apilaira.livroslaira.repository.LivroRepository;
+import br.com.apilaira.livroslaira.repository.StatusRepository;
 
 @Service
 public class LivroService {
 	
 	@Autowired
 	private LivroRepository livroRepository;
+	
+	@Autowired
+	private StatusRepository statusRepository;
+	
+	public Optional<StatusLivroEntity> findStatus(Integer id) {
+		return statusRepository.findById(id);
+	}
 	
 	public List<LivroEntity> findAll() {
 		return livroRepository.findAll();

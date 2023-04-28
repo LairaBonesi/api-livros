@@ -118,10 +118,11 @@ public class LivroController {
 		livro.setTitulo(request.getTitulo());
 		
 		List<StatusLivroEntity> listStatusEntity = new ArrayList<StatusLivroEntity>();
-		for(StatusLivroEnum statusEnum : request.getStatus()) {
-			StatusLivroEntity statusEntity = new StatusLivroEntity();
-			statusEntity.setStatus(statusEnum.name());
-			listStatusEntity.add(statusEntity);
+		for(StatusLivroRequest statusRequest : request.getStatus()) {
+			Optional<StatusLivroEntity> status = livroService.findStatus(statusRequest.getId());
+			status.ifPresent(statusEntity ->{
+				listStatusEntity.add(statusEntity);
+			});
 		}
 		
 		livro.setStatus(listStatusEntity);

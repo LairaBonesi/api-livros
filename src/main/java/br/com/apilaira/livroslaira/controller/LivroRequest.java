@@ -23,7 +23,7 @@ public class LivroRequest {
 	
 	private String genero;
 	
-	private List<StatusLivroEnum> status;
+	private List<StatusLivroRequest> status;
 	
 
 }
