@@ -1,27 +1,27 @@
 package br.com.apilaira.livroslaira;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import br.com.apilaira.livroslaira.entity.LivroEntity;
 import br.com.apilaira.livroslaira.entity.StatusLivroEntity;
 import br.com.apilaira.livroslaira.repository.LivroRepository;
 import br.com.apilaira.livroslaira.service.LivroService;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LivroServiceTest {
 
 	@InjectMocks
@@ -47,7 +47,7 @@ public class LivroServiceTest {
 		verify(livroRepository, times(1)).save(Mockito.any());
 		verify(livroRepository).save(livroCaptor.capture());
 		
-		assertEquals(livroUpdate.getId(), livroCaptor.getValue().getId());
+		Assertions.assertEquals(livroUpdate.getId(), livroCaptor.getValue().getId());
 		
 	}
 	
@@ -64,18 +64,18 @@ public class LivroServiceTest {
 		livroUpdate.setGenero("Romance");
 		livroUpdate.setPaginas(297);
 		livroUpdate.setTitulo("Mais uma vez amor");
-		livroUpdate.setStatus(Collections.singletonList(new StatusLivroEntity()));
+		livroUpdate.setStatus(Collections.singletonList(new StatusLivroEntity(1, "LIDO")));
 		livroService.update(livroUpdate, 123);
 		
 		verify(livroRepository, times(1)).save(Mockito.any());
 		verify(livroRepository).save(livroCaptor.capture());
 		
-		assertEquals(livroUpdate.getAutor(), livroCaptor.getValue().getAutor());
-		assertEquals(livroUpdate.getGenero(), livroCaptor.getValue().getGenero());
-		assertEquals(livroUpdate.getPaginas(), livroCaptor.getValue().getPaginas());
-		assertEquals(livroUpdate.getTitulo(), livroCaptor.getValue().getTitulo());
-		assertEquals(livroUpdate.getId(), livroCaptor.getValue().getId());
-		assertEquals(livroUpdate.getStatus(), livroCaptor.getValue().getStatus());
+		Assertions.assertEquals(livroUpdate.getAutor(), livroCaptor.getValue().getAutor());
+		Assertions.assertEquals(livroUpdate.getGenero(), livroCaptor.getValue().getGenero());
+		Assertions.assertEquals(livroUpdate.getPaginas(), livroCaptor.getValue().getPaginas());
+		Assertions.assertEquals(livroUpdate.getTitulo(), livroCaptor.getValue().getTitulo());
+		Assertions.assertEquals(livroUpdate.getId(), livroCaptor.getValue().getId());
+		Assertions.assertEquals(livroUpdate.getStatus(), livroCaptor.getValue().getStatus());
 
 	}
 	
@@ -92,7 +92,7 @@ public class LivroServiceTest {
 		verify(livroRepository, times(1)).delete(livro);
 		verify(livroRepository).delete(livroCaptor.capture());
 		
-		assertEquals(livro.getId(), livroCaptor.getValue().getId());
+		Assertions.assertEquals(livro.getId(), livroCaptor.getValue().getId());
 	}
 	
 	@Test
@@ -115,6 +115,22 @@ public class LivroServiceTest {
 		livroService.findAll();
 		
 		verify(livroRepository, times(1)).findAll();
+		
+	}
+	
+	@Test
+	public void findByIdTest() {
+		//GIVEN
+		LivroEntity livro = new LivroEntity();
+		livro.setId(123);
+		Mockito.when(livroRepository.findById(livro.getId())).thenReturn(Optional.of(livro));
+		
+		//WHEN
+		Optional<LivroEntity> livroEntity = livroService.findById(livro.getId());
+		
+		//THEN
+		Assertions.assertEquals(livroEntity.get().getId(),livro.getId());
+		verify(livroRepository, times(1)).findById(Mockito.any());
 		
 	}
 }
