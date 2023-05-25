@@ -1,7 +1,9 @@
 package br.com.apilaira.livroslaira;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -100,7 +102,60 @@ class LivroControllerTest {
     	mockMvc.perform(post("/cadastroLivro")
     			.contentType(MediaType.APPLICATION_JSON)
     			.content("{\"titulo\": \"Louco por Livros\",\"autor\": \"Emily Henri\",\"paginas\": 500,\"genero\": \"romance\",\"status\": [{\"id\":1},{\"id\":2}]}"))
-    			.andExpect(status().isCreated());       
+    			.andExpect(status().isCreated());         	
+    }
+    
+    @Test
+    public void deveriaBuscarPorStatusOk() throws Exception{
+        List<StatusLivroEntity> listaStatus = new ArrayList<StatusLivroEntity>();
+        listaStatus.add(new StatusLivroEntity(123, "LIDO"));
+        
+        LivroEntity livro = new LivroEntity();
+        livro.setAutor("Julia Whelan");
+        livro.setTitulo("Som do Coração");
+        livro.setGenero("romance");
+        livro.setPaginas(400);
+        livro.setStatus(listaStatus);
+        
+    	when(livroService.findByStatus(Mockito.any())).thenReturn(Collections.singletonList(livro));
     	
+    	mockMvc.perform(get("/cadastroLivro/status/LIDO"))
+    		.andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].autor").value("Julia Whelan"))
+            .andExpect(jsonPath("$[0].titulo").value("Som do Coração"))
+            .andExpect(jsonPath("$[0].paginas").value("400"))
+            .andExpect(jsonPath("$[0].genero").value("romance"))
+            .andExpect(jsonPath("$[0].status[0]").value("LIDO"));
+    	}
+    
+    @Test
+    public void deveriaAtualizarLivroOk() throws Exception{
+        List<StatusLivroEntity> listaStatus = new ArrayList<StatusLivroEntity>();
+        listaStatus.add(new StatusLivroEntity(123, "LIDO"));
+    	
+    	when(livroService.findStatus(Mockito.any())).thenReturn(Optional.of(new StatusLivroEntity(123, "LIDO")));
+    	
+    	mockMvc.perform(patch("/cadastroLivro/123")
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content("{\"titulo\": \"Louco por Livros\",\"autor\": \"Emily Henri\",\"paginas\": 500,\"genero\": \"romance\",\"status\": [{\"id\":1},{\"id\":2}]}"))
+    			.andExpect(status().isOk());  	
+    }
+    
+    @Test
+    public void deveriaAtualizarLivroSemStatusOk() throws Exception{
+        List<StatusLivroEntity> listaStatus = new ArrayList<StatusLivroEntity>();
+        listaStatus.add(new StatusLivroEntity(123, "LIDO"));
+    	
+    	when(livroService.findStatus(Mockito.any())).thenReturn(Optional.of(new StatusLivroEntity(123, "LIDO")));
+    	
+    	mockMvc.perform(patch("/cadastroLivro/123")
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content("{\"titulo\": \"Louco por Livros\",\"autor\": \"Emily Henri\",\"paginas\": 500,\"genero\": \"romance\"}"))
+    			.andExpect(status().isOk());  	
+    }
+    @Test
+    public void deveriaDeletarLivroOk() throws Exception{
+    	mockMvc.perform(delete("/cadastroLivro/123"))
+    			.andExpect(status().isOk());
     }
 }
