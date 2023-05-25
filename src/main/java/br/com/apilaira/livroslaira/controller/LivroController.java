@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -100,8 +101,8 @@ public class LivroController {
 			for(StatusLivroEntity statusEntity : livro.getStatus()) {
 				listaStatus.add(StatusLivroEnum.valueOf(statusEntity.getStatus()));
 			}
-			
 			response.setStatus(listaStatus);
+
 			responseList.add(response);
 		}
 		return responseList;
@@ -133,12 +134,22 @@ public class LivroController {
 	
 	@PatchMapping("/{id}")
 	public void update(@RequestBody LivroRequest request, @PathVariable("id") Integer id) {
+		List<StatusLivroEntity> listStatusEntity = new ArrayList<StatusLivroEntity>();
+		if(!CollectionUtils.isEmpty(request.getStatus())) {
+			for(StatusLivroRequest statusRequest : request.getStatus()) {
+				Optional<StatusLivroEntity> status = livroService.findStatus(statusRequest.getId());
+				status.ifPresent(statusEntity ->{
+					listStatusEntity.add(statusEntity);
+				});
+			}
+		
+		}
 		LivroEntity livro = new LivroEntity();
 		livro.setAutor(request.getAutor());
 		livro.setGenero(request.getGenero());
 		livro.setPaginas(request.getPaginas());
 		livro.setTitulo(request.getTitulo());
-		//livro.setStatus(request.getStatus());
+		livro.setStatus(listStatusEntity);
 		
 		livroService.update(livro, id);
 		

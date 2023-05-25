@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -16,6 +17,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "status")
 @AllArgsConstructor
+@NoArgsConstructor
 public class StatusLivroEntity {
 
     @Id
